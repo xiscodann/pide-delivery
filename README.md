@@ -21,3 +21,9 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `Mock Server`
+
+Build with Postman
+
+`https://69442918-670e-4142-8fd5-3c056a52198b.mock.pstmn.io/products`
