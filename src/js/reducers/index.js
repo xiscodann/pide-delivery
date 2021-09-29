@@ -82,7 +82,6 @@ export const reducer = (state = store, action) => {
       const indexOfProductCart = copyDecreaseCart.findIndex(
         (item) => item.id === decreaseProductId
       );
-      console.log(isInsideDecreaseCart);
       if (isInsideDecreaseCart) {
         return {
           ...state,
