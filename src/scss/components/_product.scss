@@ -1,0 +1,16 @@
+.product {
+  $parent: &;
+  height: 140px;
+  &__img {
+    &--src {
+      border-radius: 15px;
+      height: 110px;
+      width: 140px;
+    }
+  }
+  &__button {
+    background-color: #000;
+    color: #ffff;
+    margin: 0 16px;
+  }
+}

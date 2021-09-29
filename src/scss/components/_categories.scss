@@ -1,0 +1,21 @@
+.categories {
+  $parent: &;
+  &__button {
+    outline: none;
+    box-shadow: none;
+    border: 0;
+    &--active {
+      outline: none;
+      box-shadow: none;
+      border: 0;
+      background-color: red;
+    }
+    :hover {
+      outline: none;
+      box-shadow: none;
+      border: 0;
+      background-color: #6e6e6e;
+      color: #fff;
+    }
+  }
+}

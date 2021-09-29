@@ -3,16 +3,19 @@ import { useContext } from 'react';
 import StateContext from '../base/context';
 import axios from 'axios';
 import * as TYPES from '../base/types';
-import Product from '../components/Product';
+import ProductImage from '../components/ProductImage';
+import ProductDescription from '../components/ProductDescription';
 import Favorites from '../components/Favorites';
 import AddToCart from '../components/AddToCart';
 import Categories from '../components/Categories';
+import Header from '../components/Header';
+import StorePresentation from '../components/StorePresentation';
 
 const ProductsList = () => {
   const [state, dispatch] = useContext(StateContext);
   const [tabId, setTabId] = useState(7);
   const {
-    shop: { products, categories },
+    shop: { products, categories, commerce },
     favorites,
     cart,
   } = state;
@@ -56,25 +59,34 @@ const ProductsList = () => {
       'https://69442918-670e-4142-8fd5-3c056a52198b.mock.pstmn.io/products'
     );
     const { Comercio, Productos, Categorias } = res.data;
-    const commerce = [];
     const products = [];
     const categories = [];
     Object.entries(Productos).map((item) => {
-      const { nombreProducto, idCategoria, idProducto } = item[1];
-      return products.push({ idProducto, idCategoria, nombreProducto });
+      const {
+        nombreProducto,
+        idCategoria,
+        idProducto,
+        descriProducto,
+        imagenProducto,
+        precioProducto,
+      } = item[1];
+      return products.push({
+        idProducto,
+        idCategoria,
+        nombreProducto,
+        descriProducto,
+        imagenProducto,
+        precioProducto,
+      });
     });
     Object.entries(Categorias).map((item) => {
       const { idCategoria, nombreCat } = item[1];
       return categories.push({ idCategoria, nombreCat });
     });
-    Object.entries(Comercio).map((item) => {
-      const { nombreComercio } = item[1];
-      return commerce.push({ nombreComercio });
-    });
     dispatch({
       type: TYPES.FETCH_PRODUCTS,
       payload: {
-        commerce,
+        commerce: Comercio,
         products,
         categories,
       },
@@ -86,56 +98,76 @@ const ProductsList = () => {
   }, []);
 
   return (
-    <div className='list-group h-100'>
-      <h3>Agregados a favoritos {favorites.length}</h3>
-      <h3>Carrito {cart.length}</h3>
-      <div className='d-flex'>
-        {categories &&
-          categories.map((item) => {
-            const { idCategoria, nombreCat } = item;
-            if (
-              !!products.find((product) => product.idCategoria === idCategoria)
-            )
-              return (
-                <Categories
-                  categoryId={idCategoria}
-                  categoryName={nombreCat}
-                  changeTab={(e) => handlerChangeTab(e)}
-                />
-              );
-          })}
+    <>
+      <Header favorites={favorites} cart={cart} />
+      <div className='container'>
+        <StorePresentation commerce={commerce} />
+        <section className='d-flex'>
+          {categories &&
+            categories.map((item) => {
+              const { idCategoria, nombreCat } = item;
+              if (
+                !!products.find(
+                  (product) => product.idCategoria === idCategoria
+                )
+              )
+                return (
+                  <Categories
+                    tabSelected={tabId}
+                    categoryId={idCategoria}
+                    categoryName={nombreCat}
+                    changeTab={(e) => handlerChangeTab(e)}
+                  />
+                );
+            })}
+        </section>
+        <section className='row'>
+          {products &&
+            products.map((item, i) => {
+              const {
+                nombreProducto,
+                idProducto,
+                idCategoria,
+                descriProducto,
+                imagenProducto,
+                precioProducto,
+              } = item;
+              if (tabId === idCategoria) {
+                const isRepeatingElement = favorites.some(
+                  (item) => item.id === idProducto
+                );
+                const isAddedToCart = cart.filter(
+                  (item) => item.id === idProducto
+                );
+                return (
+                  <div key={i} className='product row col-6 my-3'>
+                    <ProductImage
+                      productName={nombreProducto}
+                      productImage={imagenProducto}
+                    />
+                    <div className='col-9'>
+                      <Favorites
+                        productName={nombreProducto}
+                        productId={idProducto}
+                        isRepeating={isRepeatingElement}
+                        addFavorites={(e) => handlerAddFavorites(e)}
+                      />
+                      <ProductDescription productDescription={descriProducto} />
+                      <AddToCart
+                        productPrice={precioProducto}
+                        cart={isAddedToCart}
+                        productId={idProducto}
+                        decreaseProducts={(e) => handlerDecreaseProducts(e)}
+                        increaseProducts={(e) => handlerIncreaseProducts(e)}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+            })}
+        </section>
       </div>
-      {products &&
-        products.map((item, i) => {
-          const { nombreProducto, idProducto, idCategoria } = item;
-          if (tabId === idCategoria) {
-            const isRepeatingElement = favorites.some(
-              (item) => item.id === idProducto
-            );
-            const isAddedToCart = cart.filter((item) => item.id === idProducto);
-            return (
-              <div
-                key={i}
-                className='d-flex justify-content-between col-4 my-1'
-              >
-                <Product productName={nombreProducto} />
-                <Favorites
-                  productName={nombreProducto}
-                  productId={idProducto}
-                  isRepeating={isRepeatingElement}
-                  addFavorites={(e) => handlerAddFavorites(e)}
-                />
-                <AddToCart
-                  cart={isAddedToCart}
-                  productId={idProducto}
-                  decreaseProducts={(e) => handlerDecreaseProducts(e)}
-                  increaseProducts={(e) => handlerIncreaseProducts(e)}
-                />
-              </div>
-            );
-          }
-        })}
-    </div>
+    </>
   );
 };
 
