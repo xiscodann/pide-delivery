@@ -1,0 +1,9 @@
+.store {
+  $parent: &;
+  text-align: center;
+  background-color: #050505;
+  height: 153px;
+  &__img {
+    max-height: 200px;
+  }
+}

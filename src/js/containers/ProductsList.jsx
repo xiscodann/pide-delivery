@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useContext } from 'react';
 import StateContext from '../base/context';
-import axios from 'axios';
 import * as TYPES from '../base/types';
-import Product from '../components/Product';
+import ProductImage from '../components/ProductImage';
+import ProductDescription from '../components/ProductDescription';
 import Favorites from '../components/Favorites';
 import AddToCart from '../components/AddToCart';
 import Categories from '../components/Categories';
+import Header from '../components/Header';
+import StorePresentation from '../components/StorePresentation';
+import Error from '../components/Error';
+import Loading from '../components/Loading';
 
-const ProductsList = () => {
+const ProductsList = ({ loading, errorHanlder }) => {
   const [state, dispatch] = useContext(StateContext);
   const [tabId, setTabId] = useState(7);
+
   const {
-    shop: { products, categories },
+    shop: { products, categories, commerce },
     favorites,
     cart,
   } = state;
@@ -48,94 +53,120 @@ const ProductsList = () => {
   };
 
   const handlerChangeTab = (tab) => {
-    setTabId(tab);
+    const sectionProducts = document.querySelector('#show-products');
+    if (tab !== tabId) {
+      sectionProducts.classList.add(
+        `${tab > tabId ? 'transitionToRight' : 'transitionToLeft'}`
+      );
+      setTabId(tab);
+      setTimeout(() => {
+        sectionProducts.classList.remove(
+          `${tab > tabId ? 'transitionToRight' : 'transitionToLeft'}`
+        );
+      }, 800);
+    }
   };
 
-  const getProducts = async () => {
-    const res = await axios.get(
-      'https://69442918-670e-4142-8fd5-3c056a52198b.mock.pstmn.io/products'
-    );
-    const { Comercio, Productos, Categorias } = res.data;
-    const commerce = [];
-    const products = [];
-    const categories = [];
-    Object.entries(Productos).map((item) => {
-      const { nombreProducto, idCategoria, idProducto } = item[1];
-      return products.push({ idProducto, idCategoria, nombreProducto });
-    });
-    Object.entries(Categorias).map((item) => {
-      const { idCategoria, nombreCat } = item[1];
-      return categories.push({ idCategoria, nombreCat });
-    });
-    Object.entries(Comercio).map((item) => {
-      const { nombreComercio } = item[1];
-      return commerce.push({ nombreComercio });
-    });
-    dispatch({
-      type: TYPES.FETCH_PRODUCTS,
-      payload: {
-        commerce,
-        products,
-        categories,
-      },
-    });
+  const handlerShareProduct = (productName) => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'PIDE DELIVERY - MÁS QUE UN DELIVERY',
+          text: `Mira esta deliciosa ${productName} para que te antojes 😄.\n`,
+          url: 'https://pide-qa.web.app/',
+        })
+        .then(() => {
+          console.info('Excelente, gracias por compartir');
+        })
+        .catch((err) => {
+          console.info(`No se pudo compartir, ${err}`);
+        });
+    }
   };
-
-  useEffect(() => {
-    getProducts();
-  }, []);
 
   return (
-    <div className='list-group h-100'>
-      <h3>Agregados a favoritos {favorites.length}</h3>
-      <h3>Carrito {cart.length}</h3>
-      <div className='d-flex'>
-        {categories &&
-          categories.map((item) => {
-            const { idCategoria, nombreCat } = item;
-            if (
-              !!products.find((product) => product.idCategoria === idCategoria)
-            )
-              return (
-                <Categories
-                  categoryId={idCategoria}
-                  categoryName={nombreCat}
-                  changeTab={(e) => handlerChangeTab(e)}
-                />
-              );
-          })}
-      </div>
-      {products &&
-        products.map((item, i) => {
-          const { nombreProducto, idProducto, idCategoria } = item;
-          if (tabId === idCategoria) {
-            const isRepeatingElement = favorites.some(
-              (item) => item.id === idProducto
-            );
-            const isAddedToCart = cart.filter((item) => item.id === idProducto);
-            return (
-              <div
-                key={i}
-                className='d-flex justify-content-between col-4 my-1'
-              >
-                <Product productName={nombreProducto} />
-                <Favorites
-                  productName={nombreProducto}
-                  productId={idProducto}
-                  isRepeating={isRepeatingElement}
-                  addFavorites={(e) => handlerAddFavorites(e)}
-                />
-                <AddToCart
-                  cart={isAddedToCart}
-                  productId={idProducto}
-                  decreaseProducts={(e) => handlerDecreaseProducts(e)}
-                  increaseProducts={(e) => handlerIncreaseProducts(e)}
-                />
-              </div>
-            );
-          }
-        })}
-    </div>
+    <>
+      <Header favorites={favorites} cart={cart} />
+      {!loading && !errorHanlder ? (
+        <>
+          <StorePresentation commerce={commerce} />
+          <div className='container'>
+            <section className='d-flex justify-content-md-center overflow-auto'>
+              {categories &&
+                categories.map((item) => {
+                  const { idCategoria, nombreCat, imagenCat } = item;
+                  if (
+                    !!products.find(
+                      (product) => product.idCategoria === idCategoria
+                    )
+                  )
+                    return (
+                      <Categories
+                        tabSelected={tabId}
+                        categoryId={idCategoria}
+                        categoryName={nombreCat}
+                        categoryImage={imagenCat}
+                        changeTab={(e) => handlerChangeTab(e)}
+                      />
+                    );
+                })}
+            </section>
+            <section className='row position-relative' id='show-products'>
+              {products &&
+                products.map((item, i) => {
+                  const {
+                    nombreProducto,
+                    idProducto,
+                    idCategoria,
+                    descriProducto,
+                    imagenProducto,
+                    precioProducto,
+                  } = item;
+                  if (tabId === idCategoria) {
+                    const isRepeatingElement = favorites.some(
+                      (item) => item.id === idProducto
+                    );
+                    const isAddedToCart = cart.filter(
+                      (item) => item.id === idProducto
+                    );
+                    return (
+                      <div key={i} className='product row col-12 col-lg-6 my-3'>
+                        <ProductImage
+                          productName={nombreProducto}
+                          productImage={imagenProducto}
+                        />
+                        <div className='col-8 col-sm-9'>
+                          <Favorites
+                            productName={nombreProducto}
+                            productId={idProducto}
+                            isRepeating={isRepeatingElement}
+                            addFavorites={(e) => handlerAddFavorites(e)}
+                            shareProduct={(e) => handlerShareProduct(e)}
+                          />
+                          <ProductDescription
+                            productDescription={descriProducto}
+                          />
+                          <AddToCart
+                            productPrice={precioProducto}
+                            cart={isAddedToCart}
+                            productId={idProducto}
+                            decreaseProducts={(e) => handlerDecreaseProducts(e)}
+                            increaseProducts={(e) => handlerIncreaseProducts(e)}
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
+            </section>
+          </div>
+        </>
+      ) : errorHanlder ? (
+        <Error />
+      ) : (
+        <Loading />
+      )}
+    </>
   );
 };
 

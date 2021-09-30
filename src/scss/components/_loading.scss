@@ -1,0 +1,19 @@
+.loading {
+  $parent: &;
+  height: 90vh;
+  &__anim {
+    padding: 16px;
+    display: inline-block;
+    border: 3px solid rgba(189, 189, 189, 0.25);
+    border-left-color: map-get($colors, purple-corporative);
+    border-top-color: map-get($colors, purple-corporative);
+    border-radius: 50%;
+    animation: rotate 600ms infinite linear;
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}

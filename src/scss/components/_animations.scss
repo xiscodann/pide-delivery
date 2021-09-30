@@ -1,0 +1,42 @@
+.transitionToRight {
+  animation: transitionToRight 0.5s;
+}
+.transitionToLeft {
+  animation: transitionToLeft 0.5s ease-in-out;
+}
+@keyframes transitionToLeft {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  50% {
+    left: -500px;
+    opacity: 0;
+  }
+  51% {
+    left: 500px;
+    opacity: 0;
+  }
+  100% {
+    left: 0px;
+    opacity: 1;
+  }
+}
+@keyframes transitionToRight {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  50% {
+    left: 500px;
+    opacity: 0;
+  }
+  51% {
+    left: -500px;
+    opacity: 0;
+  }
+  100% {
+    left: 0px;
+    opacity: 1;
+  }
+}
