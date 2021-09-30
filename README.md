@@ -23,11 +23,11 @@ This repository corresponds to the test to be carried out for the Pide Delivery 
 
 ### 1. Clone `HTTPS`
 
-- https://github.com/xiscodann/pide-delivery.git
+- git clone https://github.com/xiscodann/pide-delivery.git
 
-### 2. `npm install`
+### 2. Run `npm install`
 
-### 3. `npm start`
+### 3. Run `npm start`
 
     Runs the app in the development mode.
     Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
