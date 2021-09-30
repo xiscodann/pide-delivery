@@ -5,6 +5,7 @@ const Header = ({ favorites, cart }) => {
   cart.map((item) => {
     count = count + item.count;
   });
+
   return (
     <header className='container-fluid p-0'>
       <article className='header px-5 d-flex align-items-center justify-content-between'>
@@ -19,27 +20,31 @@ const Header = ({ favorites, cart }) => {
           </a>
         </section>
         <section className='d-inline-flex'>
-          <div className='header__favorites mx-4'>
+          <div className='header__favorites'>
             <button className='btn'>
               <i className='far fa-heart font-size-24 header__favorites--icon'></i>
               {favorites.length > 0 && (
-                <span class='header__favorites--badge font-size-12 text-white'>
+                <span class='header__favorites--badge font-size-14 text-white'>
                   {favorites.length}
                 </span>
               )}
             </button>
           </div>
-          <div className='header__cart mx-4'>
+          <div className='header__cart mx-5'>
             <button className='btn'>
-              <i className='fas fa-shopping-cart font-size-18'></i>
+              <img
+                className='header__cart--icon'
+                src='https://img.icons8.com/material-outlined/24/ffffff/shopping-cart--v1.png'
+                alt='Carrito'
+              />
               {cart.length > 0 && (
-                <span class='header__cart--badge font-size-12 text-white'>
+                <span class='header__cart--badge font-size-14 text-white'>
                   {count}
                 </span>
               )}
             </button>
           </div>
-          <div className='header__profile ml-5'>
+          <div className='header__profile'>
             <img
               className='header__profile--img'
               src='/assets/img/header/profile-photo.png'

@@ -7,3 +7,24 @@
 @import './components/product';
 @import './components/header';
 @import './components/categories';
+@import './components/animations';
+@import './components/store-presentation';
+@import './components/loading';
+
+body {
+  min-width: 466px;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+/* Cambiamos el fondo y agregamos una sombra cuando esté en hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b3b3b3;
+}

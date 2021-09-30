@@ -4,13 +4,28 @@
   &__img {
     &--src {
       border-radius: 15px;
-      height: 110px;
+      max-height: 110px;
+      height: 70%;
       width: 140px;
     }
   }
   &__button {
-    background-color: #000;
+    background-color: map-get($colors, purple-corporative);
     color: #ffff;
     margin: 0 16px;
+    &--icon {
+      color: #fff;
+    }
+  }
+}
+
+@media (max-width: 579px) {
+  .product {
+    height: 100%;
+    &__img {
+      &--src {
+        height: auto;
+      }
+    }
   }
 }

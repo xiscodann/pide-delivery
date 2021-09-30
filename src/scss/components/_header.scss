@@ -2,7 +2,7 @@
 
 .header {
   $parent: &;
-  background-color: map-get($colors, green-coporative);
+  background-color: map-get($colors, green-corporative);
   height: 60px;
   &__button {
     &--img {
@@ -12,13 +12,18 @@
   &__favorites {
     width: 40px;
     height: 40px;
+    color: map-get($colors, green-corporative);
     &--badge {
       position: relative;
       top: -40px;
       right: -15px;
       border-radius: 50%;
       background-color: #cf3131;
+
       padding: 0 6px;
+    }
+    &--icon {
+      color: #fff;
     }
   }
   &__cart {
@@ -29,8 +34,11 @@
       top: -40px;
       right: -15px;
       border-radius: 50%;
-      background-color: #2178c9;
+      background-color: map-get($colors, purple-corporative);
       padding: 0 6px;
+    }
+    &--icon {
+      width: 29px;
     }
   }
   &__profile {

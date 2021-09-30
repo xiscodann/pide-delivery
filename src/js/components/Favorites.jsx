@@ -1,15 +1,21 @@
 import React from 'react';
 
-const Favorites = ({ productName, productId, isRepeating, addFavorites }) => {
+const Favorites = ({
+  productName,
+  productId,
+  isRepeating,
+  addFavorites,
+  shareProduct,
+}) => {
   return (
     <div className='product__favorites d-flex justify-content-between'>
       <div>
         <h5>{productName}</h5>
       </div>
-      <div>
+      <div className='d-inline-flex'>
         <button
           type='button'
-          className='btn mx-1'
+          className='btn mx-1 shadow-none'
           onClick={() => addFavorites({ productId, productName })}
         >
           <i
@@ -18,7 +24,11 @@ const Favorites = ({ productName, productId, isRepeating, addFavorites }) => {
             }`}
           ></i>
         </button>
-        <button type='button' className='btn mx-1'>
+        <button
+          type='button'
+          className={`btn mx-1 shadow-none ${!navigator.share && 'd-none'}`}
+          onClick={() => shareProduct(productName)}
+        >
           <i className='fas fa-share-alt'></i>
         </button>
       </div>

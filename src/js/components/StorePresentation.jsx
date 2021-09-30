@@ -2,10 +2,13 @@ import React from 'react';
 
 const StorePresentation = ({ commerce }) => {
   const { bannerComercio, nombreComercio } = commerce;
-  console.log(commerce);
   return (
-    <div>
-      <img src={`${bannerComercio}`} alt={`${nombreComercio}`} />
+    <div className='store'>
+      <img
+        className='store__img img-fluid'
+        src={`${bannerComercio}`}
+        alt={`${nombreComercio}`}
+      />
     </div>
   );
 };
